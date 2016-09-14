@@ -20,9 +20,6 @@ app.get('/todos/:id', function(req, res) {
 
   var retTodo = _.findWhere(todos, {id: todoId});
 
-  // var retTodo = todos.find(function(todo) {
-  //   return todo.id === todoId;
-  // });
   if (typeof retTodo === 'undefined') {
     res.status(404).send();
   } else {
@@ -59,6 +56,33 @@ app.delete('/todos/:id', function(req,res) {
   }
 });
 
+// PUT /todos/:id
+app.put('/todos/:id', function(req, res) {
+  var body = _.pick(req.body, 'description', 'completed' );
+  var validAttributes = {};
+
+  var updateId = parseInt(req.params.id,10);
+  var updateTodo = _.findWhere(todos, {id: updateId});
+
+  if (!updateTodo) {
+    return res.status(404).send();
+  }
+
+  if (body.hasOwnProperty('completed') && _.isBoolean(body.completed)) {
+    validAttributes.completed = body.completed;
+  } else if (body.hasOwnProperty('completed')) {
+    return res.status(400).send();
+  }
+
+  if (body.hasOwnProperty('description') && _.isString(body.description) && body.description.trim().length > 0) {
+    validAttributes.description = body.description;
+  } else if (body.hasOwnProperty('description')) {
+    return res.status(400).send();
+  }
+
+  _.extend(updateTodo, validAttributes);
+  res.json(updateTodo);
+});
 
 app.get('/', function(req, res) {
   res.send('Todo API Root');
