@@ -24,7 +24,7 @@ app.get('/todos', function(req, res) {
     where.completed = true;
   } else if (query.hasOwnProperty('completed') && query.completed === 'false') {
     where.completed = false;
-  } else {
+  } else if (query.hasOwnProperty('completed')) {
     return res.status(400).send({ error: 'completed can only be true or false'});
   }
 
