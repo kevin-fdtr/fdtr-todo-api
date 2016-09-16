@@ -40,7 +40,7 @@ sequelize.sync({
 	// 	});
 	// }).then(function() {
 	// 	// return Todo.findById(1)
-	// 	return Todo.findAll({
+	// 	return Todo.findAll({	
 	// 		where: {
 	// 			description: {
 	// 				$like: '%Office%'
