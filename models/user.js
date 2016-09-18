@@ -65,15 +65,10 @@ module.exports = function (sequelize, DataTypes) {
           if (typeof token !== 'string') {
             reject();
           }
-console.log('try');
           try {
             var decodedJWT = jwt.verify(token, 'qwerty098');
-            console.log('decodedJWT.token');
-            console.log(decodedJWT.token);
-
             var bytes = cryptojs.AES.decrypt(decodedJWT.token, 'abc123!@#');
             var tokenData = JSON.parse(bytes.toString(cryptojs.enc.Utf8));
-console.log('tokenData');
             user.findById(tokenData.id).then( function(user) {
               if (user) {
                 resolve(user);
@@ -84,7 +79,6 @@ console.log('tokenData');
               reject();
             });
           } catch (e) {
-            console.log(e);
             reject();
           }
         })
