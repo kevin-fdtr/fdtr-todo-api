@@ -3,6 +3,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var _ = require('underscore');
 var db = require('./db.js');
+var bcrypt = require('bcrypt');
 
 var PORT = process.env.PORT || 3000;
 var todos = [];
@@ -130,10 +131,10 @@ app.get('/', function(req, res) {
   res.send('Todo API Root');
 });
 
-// POST /todos
+// POST /users
 app.post('/users', function(req, res) {
   var body = _.pick(req.body, 'email', 'password' );
-console.log(body);
+
   db.user.create(body)
   .then( function(user) {
     res.json(user.toPublicJSON());
@@ -142,8 +143,19 @@ console.log(body);
   });
 });
 
+// POST /users/login
+app.post('/users/login', function(req, res) {
+  var body = _.pick(req.body, 'email', 'password');
+
+  db.user.authenticate(body).then( function(user) {
+    res.json(user.toPublicJSON());
+  }, function() {
+    res.status(401).send();
+  });
+});
+
 db.sequelize.sync(
-  // {force:true}
+  {force:true}
 ).then( function() {
   app.listen(PORT, function () {
    console.log('Express listening on port ' + PORT + '!');
