@@ -42,6 +42,7 @@ app.get('/todos', middleware.requireAuthentication, function(req, res) {
   db.todo.findAll(where).then( function(todos) {
     res.json(todos);
   }, function(e) {
+    console.log(e);
     res.status(500).send();
   });
 });
