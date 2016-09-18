@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var _ = require('underscore');
 var db = require('./db.js');
 var bcrypt = require('bcrypt');
+var middleware = require('./middleware.js')(db);
 
 var PORT = process.env.PORT || 3000;
 var todos = [];
@@ -17,7 +18,7 @@ app.get('/', function(req, res) {
 });
 
 //GET /todos?completed=
-app.get('/todos', function(req, res) {
+app.get('/todos', middleware.requireAuthentication, function(req, res) {
   var query = req.query;
   var where = {};
 
@@ -41,7 +42,7 @@ app.get('/todos', function(req, res) {
 });
 
 // GET /todos/:id
-app.get('/todos/:id', function(req, res) {
+app.get('/todos/:id', middleware.requireAuthentication, function(req, res) {
   var todoId = parseInt(req.params.id,10);
 
   if (isNaN(todoId)) {
@@ -60,7 +61,7 @@ app.get('/todos/:id', function(req, res) {
 });
 
 // POST /todos
-app.post('/todos', function(req, res) {
+app.post('/todos', middleware.requireAuthentication, function(req, res) {
   var body = _.pick(req.body, 'description', 'completed' );
 
   db.todo.create(body)
@@ -72,7 +73,7 @@ app.post('/todos', function(req, res) {
 });
 
 // DELETE /todos/:id
-app.delete('/todos/:id', function(req,res) {
+app.delete('/todos/:id', middleware.requireAuthentication, function(req,res) {
   var deleteId = parseInt(req.params.id,10);
   if (isNaN(deleteId)) {
     return res.status(400).send();
@@ -90,7 +91,7 @@ app.delete('/todos/:id', function(req,res) {
 });
 
 // PUT /todos/:id
-app.put('/todos/:id', function(req, res) {
+app.put('/todos/:id', middleware.requireAuthentication, function(req, res) {
 console.log('req.params');
 console.log(req.params);
 
@@ -160,7 +161,7 @@ app.post('/users/login', function(req, res) {
 });
 
 db.sequelize.sync(
-  {force:true}
+  // {force:true}
 ).then( function() {
   app.listen(PORT, function () {
    console.log('Express listening on port ' + PORT + '!');
