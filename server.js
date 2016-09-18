@@ -35,7 +35,7 @@ app.get('/todos', middleware.requireAuthentication, function(req, res) {
 
   var where = {
     where: {
-      userid: req.user.get('id')
+      userId: req.user.get('id')
     }
   };
 
@@ -57,7 +57,7 @@ app.get('/todos/:id', middleware.requireAuthentication, function(req, res) {
 
   var where = {
     where: {
-      userid: req.user.get('id'),
+      userId: req.user.get('id'),
       id: todoId
     }
   };
@@ -98,7 +98,7 @@ app.delete('/todos/:id', middleware.requireAuthentication, function(req,res) {
 
   var where = {
     where: {
-      userid: req.user.get('id'),
+      userId: req.user.get('id'),
       id: deleteId
     }
   };
@@ -137,7 +137,7 @@ console.log(updateId);
 
   var where = {
     where: {
-      userid: req.user.get('id'),
+      userId: req.user.get('id'),
       id: updateId,
     }
   }
